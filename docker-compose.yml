@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: desires-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: desires-secure-pass
+      MONGO_INITDB_DATABASE: desires
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - desires-network
+
+  app:
+    build: .
+    container_name: desires-store
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_URI: mongodb://admin:desires-secure-pass@mongo:27017/desires
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NODE_ENV: production
+    depends_on:
+      - mongo
+    networks:
+      - desires-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  desires-network:
+    driver: bridge
