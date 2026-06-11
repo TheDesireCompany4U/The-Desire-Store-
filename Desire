@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Desires — Intimacy, Refined</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@300;400;500&display=swap');
+
+  :root {
+    --noir:  #1c1418;
+    --plum:  #4a1c35;
+    --mauve: #9b5e72;
+    --blush: #e8cdd4;
+    --petal: #f5eaed;
+    --linen: #faf6f4;
+    --warm:  #c8a882;
+    --mist:  #8a7880;
+    --gold:  #b8965a;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--linen); color: var(--noir); font-weight: 300; line-height: 1.65; font-size: 15px; }
+
+  /* AGE GATE */
+  #ageGate { position: fixed; inset: 0; z-index: 1000; background: var(--noir); display: flex; align-items: center; justify-content: center; }
+  #ageGate.gone { display: none; }
+  .gate-inner { max-width: 420px; width: 90%; text-align: center; padding: 3.5rem 2.5rem; border: 1px solid rgba(232,205,212,.15); border-radius: 2px; }
+  .gate-wordmark { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-style: italic; color: var(--blush); letter-spacing: .06em; margin-bottom: .25rem; }
+  .gate-sub { font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; color: var(--mauve); margin-bottom: 2rem; display: block; }
+  .gate-q { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--linen); margin-bottom: .7rem; }
+  .gate-note { font-size: .8rem; color: var(--mist); margin-bottom: 2rem; line-height: 1.7; }
+  .gate-btns { display: flex; gap: .8rem; justify-content: center; }
+  .g-enter { background: var(--plum); color: #fff; border: none; padding: .7rem 2.2rem; font-family: 'Jost', sans-serif; font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; border-radius: 1px; cursor: pointer; transition: background .2s; }
+  .g-enter:hover { background: var(--mauve); }
+  .g-leave { background: transparent; color: var(--mist); border: 1px solid rgba(138,120,128,.35); padding: .7rem 2.2rem; font-family: 'Jost', sans-serif; font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; border-radius: 1px; cursor: pointer; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(250,246,244,.97); backdrop-filter: blur(12px); border-bottom: 1px solid var(--blush); display: flex; align-items: center; justify-content: space-between; padding: 0 3rem; height: 68px; }
+  .wordmark { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-style: italic; color: var(--plum); text-decoration: none; }
+  .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+  .nav-links a { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mist); text-decoration: none; transition: color .2s; }
+  .nav-links a:hover { color: var(--plum); }
+  .cart-pill { background: var(--plum); color: #fff; border: none; padding: .45rem 1.2rem; border-radius: 30px; font-family: 'Jost', sans-serif; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: background .2s; }
+  .cart-pill:hover { background: var(--mauve); }
+
+  /* HERO */
+  .hero { display: grid; grid-template-columns: 55% 45%; min-height: 88vh; }
+  .hero-left {
+    background: linear-gradient(135deg, #2a0a1e 0%, #4a1c35 50%, #1c0d16 100%);
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end; padding: 3.5rem;
+  }
+  .hero-bg-art {
+    position: absolute; inset: 0; opacity: .18;
+    background-image: radial-gradient(ellipse at 30% 60%, #9b5e72 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 20%, #c8a882 0%, transparent 50%);
+  }
+  /* Decorative rose SVG in hero */
+  .hero-rose {
+    position: absolute; top: 10%; right: 8%; opacity: .22; width: 260px; height: 260px;
+  }
+  .hero-copy { position: relative; z-index: 1; }
+  .eyebrow { font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; color: var(--warm); margin-bottom: 1rem; }
+  .hero-h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.6rem,4.5vw,4.4rem); font-weight: 400; line-height: 1.08; color: #fff; margin-bottom: 1.1rem; }
+  .hero-h1 em { font-style: italic; color: var(--blush); }
+  .hero-p { font-size: .9rem; color: rgba(255,255,255,.68); max-width: 380px; line-height: 1.8; margin-bottom: 2rem; }
+  .hero-btns { display: flex; gap: .9rem; flex-wrap: wrap; }
+  .btn-solid { background: var(--plum); color: #fff; border: none; padding: .75rem 2rem; border-radius: 1px; font-family: 'Jost', sans-serif; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: background .2s; }
+  .btn-solid:hover { background: var(--mauve); }
+  .btn-ghost { background: transparent; color: rgba(255,255,255,.85); border: 1px solid rgba(255,255,255,.4); padding: .75rem 2rem; border-radius: 1px; font-family: 'Jost', sans-serif; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+  .btn-ghost:hover { border-color: #fff; color: #fff; }
+
+  .hero-right { background: var(--petal); display: flex; flex-direction: column; justify-content: center; padding: 4rem 3.5rem; gap: 1.8rem; }
+  .feat-label { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--mauve); }
+  .feat-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--plum); line-height: 1.2; }
+  .feat-card { background: #fff; border-radius: 3px; overflow: hidden; box-shadow: 0 4px 24px rgba(74,28,53,.1); display: flex; }
+  .feat-thumb { width: 130px; height: 130px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .fc-body { padding: 1.1rem 1.2rem; display: flex; flex-direction: column; justify-content: center; }
+  .fc-brand { font-size: .67rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mauve); margin-bottom: .25rem; }
+  .fc-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--plum); margin-bottom: .3rem; }
+  .fc-desc { font-size: .78rem; color: var(--mist); line-height: 1.6; margin-bottom: .6rem; }
+  .fc-price { font-size: 1rem; font-weight: 500; color: var(--plum); }
+  .pay-row { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; padding-top: .6rem; border-top: 1px solid var(--blush); }
+  .pay-lbl { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mist); }
+  .chip { font-size: .72rem; padding: .22rem .65rem; border-radius: 20px; }
+  .chip.pp { background: #003087; color: #fff; }
+  .chip.ap { background: #111; color: #fff; }
+  .chip.cc { background: var(--blush); color: var(--plum); }
+
+  /* TRUST */
+  .trust { background: var(--plum); color: var(--blush); display: flex; justify-content: center; gap: 3.5rem; padding: .9rem 2rem; flex-wrap: wrap; }
+  .trust-i { display: flex; align-items: center; gap: .55rem; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+
+  /* SECTIONS */
+  .sec { padding: 5rem 3.5rem; }
+  .sec-hd { margin-bottom: 2.8rem; }
+  .sec-eye { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: var(--mauve); margin-bottom: .6rem; }
+  .sec-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 400; color: var(--plum); }
+
+  /* CATEGORIES */
+  .cat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; }
+  .cat-card { position: relative; overflow: hidden; border-radius: 3px; aspect-ratio: 2/3; cursor: pointer; transition: transform .3s; }
+  .cat-card:hover { transform: translateY(-4px); }
+  .cat-visual { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+  .cat-veil { position: absolute; inset: 0; background: linear-gradient(to top,rgba(28,20,24,.85),rgba(28,20,24,.05) 65%); display: flex; flex-direction: column; justify-content: flex-end; padding: 1.4rem; }
+  .cat-name { font-family: 'Playfair Display', serif; color: #fff; font-size: 1.2rem; margin-bottom: .25rem; }
+  .cat-ct { font-size: .73rem; color: rgba(232,205,212,.75); letter-spacing: .06em; }
+
+  /* PRODUCTS */
+  .products-bg { background: var(--petal); }
+  .prod-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.6rem; }
+  .prod-card { background: #fff; border-radius: 3px; overflow: hidden; cursor: pointer; transition: box-shadow .25s, transform .25s; }
+  .prod-card:hover { box-shadow: 0 10px 40px rgba(74,28,53,.13); transform: translateY(-3px); }
+  .prod-thumb { position: relative; aspect-ratio: 1/1; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .prod-flag { position: absolute; top: .8rem; left: .8rem; background: var(--plum); color: #fff; font-size: .63rem; letter-spacing: .1em; text-transform: uppercase; padding: .25rem .65rem; border-radius: 1px; z-index: 1; }
+  .prod-flag.sale { background: var(--gold); }
+  .prod-flag.new-tag { background: #2d6b3e; }
+  .prod-body { padding: 1.25rem; }
+  .prod-brand { font-size: .67rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mauve); margin-bottom: .25rem; }
+  .prod-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--plum); margin-bottom: .4rem; }
+  .prod-desc { font-size: .8rem; color: var(--mist); line-height: 1.65; margin-bottom: .9rem; }
+  .prod-foot { display: flex; justify-content: space-between; align-items: center; }
+  .prod-price { font-size: 1rem; font-weight: 500; color: var(--plum); }
+  .stars { color: var(--gold); font-size: .78rem; margin-bottom: .3rem; }
+  .add-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--plum); color: #fff; border: none; font-size: 1.1rem; cursor: pointer; transition: background .2s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .add-icon:hover { background: var(--mauve); }
+  .color-dots { display: flex; gap: .4rem; margin-bottom: .7rem; flex-wrap: wrap; }
+  .cdot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,.15); display: inline-block; cursor: pointer; transition: transform .15s; flex-shrink: 0; }
+  .cdot:hover { transform: scale(1.3); }
+
+  /* PHOTO UPLOAD NOTICE */
+  .photo-notice { background: #fff8e1; border: 1px dashed var(--gold); border-radius: 3px; padding: .6rem 1rem; font-size: .75rem; color: #7a5c1e; margin-bottom: 1.5rem; display: flex; align-items: center; gap: .5rem; }
+
+  /* PERSONAL NOTE */
+  .personal-sec { display: grid; grid-template-columns: 1fr 1fr; }
+  .personal-visual { background: linear-gradient(135deg,#2a0a1e,#4a1c35,#7a2d52); display: flex; align-items: center; justify-content: center; min-height: 500px; padding: 3rem; }
+  .personal-copy { background: var(--plum); color: var(--blush); padding: 5rem 4rem; display: flex; flex-direction: column; justify-content: center; }
+  .personal-copy .sec-eye { color: var(--warm); }
+  .personal-copy .sec-title { color: var(--linen); margin-bottom: 1.4rem; font-size: 2rem; }
+  .letter { font-size: .9rem; line-height: 1.85; color: rgba(232,205,212,.85); font-style: italic; border-left: 2px solid var(--mauve); padding-left: 1.2rem; margin-bottom: 1.6rem; }
+  .sign { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-style: italic; color: var(--warm); }
+  .promise-cards { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+  .pcard { background: rgba(255,255,255,.07); border-radius: 3px; padding: 1rem 1.2rem; display: flex; gap: 1rem; align-items: flex-start; border: 1px solid rgba(232,205,212,.1); }
+  .pcard-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .pcard-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--linen); margin-bottom: .2rem; }
+  .pcard-text { font-size: .78rem; color: rgba(232,205,212,.7); line-height: 1.6; }
+
+  /* PAYMENT */
+  .pay-sec { background: var(--noir); padding: 4rem 3.5rem; text-align: center; }
+  .pay-sec .sec-eye { color: var(--mauve); }
+  .pay-sec .sec-title { color: var(--linen); margin-bottom: .7rem; }
+  .pay-sub { font-size: .88rem; color: var(--mist); max-width: 480px; margin: 0 auto 2.5rem; }
+  .pay-methods { display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; }
+  .pm { background: rgba(255,255,255,.05); border: 1px solid rgba(232,205,212,.12); border-radius: 3px; padding: 1.4rem 2rem; display: flex; flex-direction: column; align-items: center; gap: .5rem; min-width: 130px; }
+  .pm-icon { font-size: 2rem; }
+  .pm-name { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--blush); }
+  .pm-note { font-size: .7rem; color: var(--mist); }
+  .wix-line { font-size: .76rem; color: var(--mist); margin-top: 2rem; }
+  .wix-line a { color: var(--mauve); text-decoration: none; }
+
+  /* NEWSLETTER */
+  .nl-sec { background: var(--petal); text-align: center; padding: 4.5rem 3.5rem; }
+  .nl-sec .sec-title { color: var(--plum); margin-bottom: .8rem; }
+  .nl-sub { font-size: .88rem; color: var(--mist); max-width: 420px; margin: 0 auto 2rem; line-height: 1.75; }
+  .nl-form { display: flex; gap: .6rem; max-width: 400px; margin: 0 auto; }
+  .nl-input { flex: 1; padding: .72rem 1rem; border: 1px solid var(--blush); border-radius: 1px; background: #fff; font-family: 'Jost', sans-serif; font-size: .85rem; color: var(--noir); outline: none; }
+  .nl-input:focus { border-color: var(--mauve); }
+
+  /* FOOTER */
+  footer { background: var(--noir); padding: 3.5rem; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; border-top: 1px solid rgba(232,205,212,.08); }
+  .f-logo { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-style: italic; color: var(--blush); display: block; margin-bottom: .75rem; }
+  .f-tag { font-size: .8rem; color: var(--mist); line-height: 1.75; max-width: 220px; }
+  .f-col h4 { font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--mauve); margin-bottom: 1rem; }
+  .f-col ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+  .f-col ul a { font-size: .8rem; color: var(--mist); text-decoration: none; transition: color .2s; }
+  .f-col ul a:hover { color: var(--blush); }
+  .f-bottom { background: var(--noir); border-top: 1px solid rgba(232,205,212,.07); padding: 1.1rem 3.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem; }
+  .f-bottom p { font-size: .73rem; color: var(--mist); }
+
+  /* MODAL */
+  .modal-bg { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(28,20,24,.78); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+  .modal-bg.open { display: flex; }
+  .modal-box { background: var(--linen); border-radius: 3px; max-width: 560px; width: 92%; position: relative; display: flex; overflow: hidden; animation: slideUp .28s ease; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  .modal-img-wrap { width: 210px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-info { padding: 2rem 1.8rem; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; max-height: 80vh; }
+  .modal-brand { font-size: .67rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mauve); margin-bottom: .3rem; }
+  .modal-name { font-family: 'Playfair Display', serif; font-size: 1.45rem; color: var(--plum); margin-bottom: .5rem; }
+  .modal-colors-row { margin-bottom: .8rem; }
+  .modal-colors-row span { font-size: .75rem; color: var(--mist); margin-bottom: .4rem; display: block; }
+  .modal-desc { font-size: .83rem; color: var(--mist); line-height: 1.7; margin-bottom: 1rem; }
+  .modal-price { font-size: 1.2rem; font-weight: 500; color: var(--plum); margin-bottom: .5rem; }
+  .modal-pay { font-size: .73rem; color: var(--mist); margin-bottom: 1.3rem; }
+  .modal-actions { display: flex; gap: .7rem; }
+  .btn-close { position: absolute; top: .9rem; right: .9rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--mist); }
+  .btn-add { background: var(--plum); color: #fff; border: none; padding: .65rem 1.6rem; border-radius: 1px; font-family: 'Jost', sans-serif; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: background .2s; }
+  .btn-add:hover { background: var(--mauve); }
+  .btn-back { background: transparent; color: var(--plum); border: 1px solid var(--blush); padding: .65rem 1.2rem; border-radius: 1px; font-family: 'Jost', sans-serif; font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; }
+
+  #toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; background: var(--plum); color: #fff; padding: .9rem 1.6rem; border-radius: 2px; font-size: .85rem; box-shadow: 0 8px 30px rgba(0,0,0,.25); transform: translateY(70px); opacity: 0; transition: all .3s ease; }
+  #toast.show { transform: translateY(0); opacity: 1; }
+
+  @media(max-width:960px){
+    .hero{grid-template-columns:1fr} .personal-sec{grid-template-columns:1fr} .personal-visual{min-height:220px}
+    .prod-grid{grid-template-columns:repeat(2,1fr)} .cat-row{grid-template-columns:repeat(2,1fr)}
+    footer{grid-template-columns:1fr 1fr;gap:2rem} .sec{padding:3rem 1.5rem}
+    .hero-right,.personal-copy{padding:2.5rem 1.5rem} nav{padding:0 1.5rem} .nav-links{display:none}
+    .trust{gap:1.2rem} footer,.f-bottom{padding:2.5rem 1.5rem}
+    .modal-box{flex-direction:column} .modal-img-wrap{width:100%;height:180px}
+  }
+</style>
+</head>
+<body>
+
+<!-- AGE GATE -->
+<div id="ageGate">
+  <div class="gate-inner">
+    <div class="gate-wordmark">Desires</div>
+    <span class="gate-sub">Adult Boutique · 18+</span>
+    <div class="gate-q">Are you 18 or older?</div>
+    <p class="gate-note">This site contains adult content for mature audiences only. By entering you confirm you are of legal age in your region.</p>
+    <div class="gate-btns">
+      <button class="g-enter" onclick="document.getElementById('ageGate').classList.add('gone')">Enter</button>
+      <button class="g-leave" onclick="location.href='https://www.google.com'">Exit</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="wordmark" href="#">Desires</a>
+  <ul class="nav-links">
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#collections">Collections</a></li>
+    <li><a href="#story">Our Story</a></li>
+  </ul>
+  <button class="cart-pill" id="cartBtn" onclick="openCart()">Bag (0)</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-bg-art"></div>
+    <!-- Decorative rose SVG -->
+    <svg class="hero-rose" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="80" fill="#9b5e72" opacity=".3"/>
+      <circle cx="100" cy="100" r="55" fill="#c8a882" opacity=".25"/>
+      <circle cx="100" cy="100" r="30" fill="#e8cdd4" opacity=".3"/>
+      <path d="M100 40 C120 60 140 80 100 100 C60 80 80 60 100 40Z" fill="#e8cdd4" opacity=".5"/>
+      <path d="M100 40 C80 60 60 80 100 100 C140 80 120 60 100 40Z" fill="#9b5e72" opacity=".4"/>
+      <path d="M60 70 C80 90 100 100 100 100 C80 110 60 100 60 70Z" fill="#c8a882" opacity=".4"/>
+      <path d="M140 70 C120 90 100 100 100 100 C120 110 140 100 140 70Z" fill="#e8cdd4" opacity=".4"/>
+    </svg>
+    <div class="hero-copy">
+      <p class="eyebrow">New Arrivals — Summer 2026</p>
+      <h1 class="hero-h1"><em>Desires.</em><br>Your pleasure,<br>your way.</h1>
+      <p class="hero-p">Premium intimacy products for every body — body-safe, discreetly shipped, and priced for real people.</p>
+      <div class="hero-btns">
+        <button class="btn-solid" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+        <button class="btn-ghost" onclick="document.getElementById('story').scrollIntoView({behavior:'smooth'})">Our Story</button>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <p class="feat-label">Featured This Week</p>
+    <div class="feat-title">Hand-picked<br>for you</div>
+    <div class="feat-card">
+      <div class="feat-thumb" style="background:linear-gradient(135deg,#1a1a1a,#3a0a2e)">
+        <svg width="70" height="70" viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" fill="#9b5e72" opacity=".6"/><circle cx="50" cy="50" r="22" fill="#e8cdd4" opacity=".5"/><circle cx="50" cy="50" r="10" fill="#c8a882"/></svg>
+      </div>
+      <div class="fc-body">
+        <div class="fc-brand">Desires</div>
+        <div class="fc-name">Glow Rose Vibrator</div>
+        <div class="fc-desc">10 suction modes · Glow-in-dark · USB rechargeable</div>
+        <div class="fc-price">$18.99</div>
+      </div>
+    </div>
+    <div class="pay-row">
+      <span class="pay-lbl">We accept</span>
+      <span class="chip pp">🅿 PayPal</span>
+      <span class="chip ap"> Apple Pay</span>
+      <span class="chip cc">💳 Card</span>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust">
+  <div class="trust-i">🔒 Discreet Packaging</div>
+  <div class="trust-i">🌿 Body-Safe Materials</div>
+  <div class="trust-i">↩ 60-Day Returns</div>
+  <div class="trust-i">🚚 Free Ship $50+</div>
+  <div class="trust-i">✅ SSL Secured</div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="sec" id="collections">
+  <div class="sec-hd">
+    <p class="sec-eye">Browse</p>
+    <h2 class="sec-title">Shop by Category</h2>
+  </div>
+  <div class="cat-row">
+    <div class="cat-card"><div class="cat-visual" style="background:linear-gradient(135deg,#2a0a1e,#7a2d52)">🌹</div><div class="cat-veil"><div class="cat-name">Vibrators</div><div class="cat-ct">Rose · Rabbit · Glow</div></div></div>
+    <div class="cat-card"><div class="cat-visual" style="background:linear-gradient(135deg,#0a1a2a,#1c4a6b)">🎲</div><div class="cat-veil"><div class="cat-name">Couples Play</div><div class="cat-ct">Dice · Swings · Games</div></div></div>
+    <div class="cat-card"><div class="cat-visual" style="background:linear-gradient(135deg,#1a1a0a,#4a3a1c)">🦊</div><div class="cat-veil"><div class="cat-name">Accessories</div><div class="cat-ct">Tails · Plugs · More</div></div></div>
+    <div class="cat-card"><div class="cat-visual" style="background:linear-gradient(135deg,#1a2a1a,#2d5a3e)">🎁</div><div class="cat-veil"><div class="cat-name">Gift Sets</div><div class="cat-ct">Perfect for any occasion</div></div></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="sec products-bg" id="shop">
+  <div class="sec-hd">
+    <p class="sec-eye">Our Collection</p>
+    <h2 class="sec-title">Everything in Stock</h2>
+  </div>
+  <div class="photo-notice">
+    📸 <strong>Note:</strong> Product images are placeholders — your real product photos will be dropped in here once uploaded.
+  </div>
+  <div class="prod-grid" id="productGrid"></div>
+</section>
+
+<!-- PERSONAL NOTE -->
+<section class="personal-sec" id="story">
+  <div class="personal-visual">
+    <svg width="200" height="200" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="90" fill="none" stroke="#9b5e72" stroke-width="1" opacity=".4"/>
+      <circle cx="100" cy="100" r="65" fill="none" stroke="#c8a882" stroke-width="1" opacity=".3"/>
+      <circle cx="100" cy="100" r="40" fill="#9b5e72" opacity=".2"/>
+      <text x="100" y="107" font-family="serif" font-size="42" text-anchor="middle" fill="#e8cdd4" opacity=".7" font-style="italic">D</text>
+    </svg>
+  </div>
+  <div class="personal-copy">
+    <p class="sec-eye">A Note From Us</p>
+    <h2 class="sec-title">This is a safe space.</h2>
+    <p class="letter">"I started Desires because I believed pleasure deserves dignity. No judgment, no shame — just honest products, fair prices, and a shop that treats you like the adult you are. Every item I carry is something I'd recommend to a close friend."</p>
+    <div class="sign">— The Desires Team</div>
+    <div class="promise-cards">
+      <div class="pcard"><div class="pcard-icon">📦</div><div><div class="pcard-title">Completely Discreet</div><div class="pcard-text">Plain packaging. No logos, no labels. Just your order, your business.</div></div></div>
+      <div class="pcard"><div class="pcard-icon">💬</div><div><div class="pcard-title">Real Support</div><div class="pcard-text">Judgment-free team available 7 days a week by chat or email.</div></div></div>
+      <div class="pcard"><div class="pcard-icon">🌿</div><div><div class="pcard-title">Body-Safe, Always</div><div class="pcard-text">We vet every product. Your safety is non-negotiable.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENT -->
+<section class="pay-sec">
+  <div class="sec-hd" style="margin-bottom:1.5rem"><p class="sec-eye">Checkout</p><h2 class="sec-title">Pay your way.</h2></div>
+  <p class="pay-sub">Desires runs on Wix Stores — every transaction SSL-encrypted and processed securely through PayPal or Apple Pay.</p>
+  <div class="pay-methods">
+    <div class="pm"><div class="pm-icon">🅿</div><div class="pm-name">PayPal</div><div class="pm-note">Buyer Protected</div></div>
+    <div class="pm"><div class="pm-icon"></div><div class="pm-name">Apple Pay</div><div class="pm-note">Face / Touch ID</div></div>
+    <div class="pm"><div class="pm-icon">💳</div><div class="pm-name">Visa / MC / Amex</div><div class="pm-note">All major cards</div></div>
+    <div class="pm"><div class="pm-icon">🔒</div><div class="pm-name">256-bit SSL</div><div class="pm-note">End-to-end encrypted</div></div>
+  </div>
+  <p class="wix-line">Powered by <a href="https://wix.com" target="_blank">Wix Stores</a></p>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="nl-sec">
+  <p class="sec-eye">Join the Circle</p>
+  <h2 class="sec-title">A little something for you.</h2>
+  <p class="nl-sub">Sign up and get 10% off your first order, plus new arrivals and exclusive offers — delivered discreetly.</p>
+  <div class="nl-form">
+    <input class="nl-input" type="email" placeholder="your@email.com"/>
+    <button class="btn-solid">Join</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div><span class="f-logo">Desires</span><p class="f-tag">Premium intimacy products for every body. Pleasure-positive, judgment-free, always discreet.</p></div>
+  <div class="f-col"><h4>Shop</h4><ul><li><a href="#">Vibrators</a></li><li><a href="#">Couples Play</a></li><li><a href="#">Accessories</a></li><li><a href="#">Gift Sets</a></li></ul></div>
+  <div class="f-col"><h4>Help</h4><ul><li><a href="#">FAQ</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="#">Contact</a></li></ul></div>
+  <div class="f-col"><h4>About</h4><ul><li><a href="#">Our Story</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+</footer>
+<div class="f-bottom">
+  <p>© 2026 Desires. All rights reserved. Adults 18+ only.</p>
+  <p>🔒 Secured by Wix · PayPal &amp; Apple Pay</p>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal-box">
+    <button class="btn-close" onclick="closeModal()">✕</button>
+    <div class="modal-img-wrap" id="mImgWrap"></div>
+    <div class="modal-info">
+      <div class="modal-brand" id="mBrand"></div>
+      <div class="modal-name" id="mName"></div>
+      <div class="modal-colors-row" id="mColors"></div>
+      <div class="modal-desc" id="mDesc"></div>
+      <div class="modal-price" id="mPrice"></div>
+      <div class="modal-pay">Pay via <strong>PayPal</strong>, <strong>Apple Pay</strong>, or card</div>
+      <div class="modal-actions">
+        <button class="btn-add" onclick="addToCart();closeModal()">Add to Bag</button>
+        <button class="btn-back" onclick="closeModal()">Keep Looking</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast">✔ Added to your bag</div>
+
+<script>
+// SVG product illustrations — replaced with real photos once you upload them
+// Each product has a unique color palette matching the item
+const prodSVGs = {
+  dice: `<svg width="110" height="110" viewBox="0 0 110 110"><rect x="10" y="10" width="38" height="38" rx="6" fill="#f5f5f0" stroke="#ccc" stroke-width="1.5"/><circle cx="29" cy="29" r="4" fill="#333"/><rect x="62" y="10" width="38" height="38" rx="6" fill="#1a1a1a" stroke="#444" stroke-width="1.5"/><circle cx="81" cy="21" r="3.5" fill="#e8cdd4"/><circle cx="81" cy="39" r="3.5" fill="#e8cdd4"/><circle cx="72" cy="29" r="3.5" fill="#e8cdd4"/><circle cx="90" cy="29" r="3.5" fill="#e8cdd4"/><rect x="10" y="62" width="38" height="38" rx="6" fill="#b5e550" stroke="#9bc432" stroke-width="1.5"/><circle cx="22" cy="74" r="3.5" fill="#444"/><circle cx="38" cy="90" r="3.5" fill="#444"/></svg>`,
+  foxtail_iris: `<svg width="110" height="110" viewBox="0 0 110 110"><ellipse cx="55" cy="35" rx="8" ry="20" fill="#c0c0c0"/><ellipse cx="55" cy="35" rx="5" ry="15" fill="#e0e0e0"/><path d="M55 55 Q30 75 20 95 Q40 85 55 75 Q70 85 90 95 Q80 75 55 55Z" fill="#ff6b9d"/><path d="M55 55 Q40 70 35 85 Q50 78 55 70 Q60 78 75 85 Q70 70 55 55Z" fill="#ff9ed8"/><path d="M55 55 Q50 65 52 75 Q55 68 58 75 Q60 65 55 55Z" fill="#ffb6c1"/><ellipse cx="55" cy="30" rx="10" ry="6" fill="gold" opacity=".4"/></svg>`,
+  rose_glow: `<svg width="110" height="110" viewBox="0 0 110 110"><circle cx="55" cy="55" r="38" fill="#4caf50" opacity=".15"/><circle cx="55" cy="55" r="28" fill="#4caf50" opacity=".25"/><circle cx="55" cy="55" r="18" fill="#4caf50" opacity=".5"/><circle cx="55" cy="55" r="10" fill="#b9f6ca"/><path d="M55 25 C65 35 75 45 55 55 C35 45 45 35 55 25Z" fill="#81c784" opacity=".7"/><path d="M55 25 C45 35 35 45 55 55 C75 45 65 35 55 25Z" fill="#4caf50" opacity=".5"/><path d="M25 45 C38 55 55 55 55 55 C38 65 25 62 25 45Z" fill="#a5d6a7" opacity=".6"/><path d="M85 45 C72 55 55 55 55 55 C72 65 85 62 85 45Z" fill="#81c784" opacity=".6"/></svg>`,
+  rose_vib: `<svg width="110" height="110" viewBox="0 0 110 110"><circle cx="55" cy="55" r="38" fill="#9b3a7d" opacity=".2"/><circle cx="55" cy="55" r="28" fill="#9b3a7d" opacity=".35"/><circle cx="55" cy="55" r="18" fill="#c75b9b"/><circle cx="55" cy="55" r="10" fill="#f3a8d8"/><path d="M55 22 C67 34 78 46 55 55 C32 46 43 34 55 22Z" fill="#f3a8d8" opacity=".7"/><path d="M55 22 C43 34 32 46 55 55 C78 46 67 34 55 22Z" fill="#c75b9b" opacity=".5"/><path d="M22 44 C38 55 55 55 55 55 C38 65 22 63 22 44Z" fill="#e879b9" opacity=".6"/><path d="M88 44 C72 55 55 55 55 55 C72 65 88 63 88 44Z" fill="#f3a8d8" opacity=".6"/></svg>`,
+  rabbit: `<svg width="110" height="110" viewBox="0 0 110 110"><rect x="45" y="15" width="14" height="30" rx="7" fill="#1a1a1a"/><rect x="42" y="38" width="20" height="50" rx="10" fill="#222"/><ellipse cx="38" cy="70" rx="10" ry="6" fill="#1a1a1a"/><line x1="55" y1="45" x2="55" y2="85" stroke="#444" stroke-width="2"/><circle cx="55" cy="85" r="8" fill="#333"/><circle cx="49" cy="27" r="3" fill="#555"/><circle cx="61" cy="27" r="3" fill="#555"/></svg>`,
+  rabbit_pink: `<svg width="110" height="110" viewBox="0 0 110 110"><rect x="45" y="15" width="14" height="30" rx="7" fill="#ff69b4"/><rect x="42" y="38" width="20" height="50" rx="10" fill="#ff85c2"/><ellipse cx="38" cy="70" rx="10" ry="6" fill="#ff69b4"/><line x1="55" y1="45" x2="55" y2="85" stroke="#ff9dd1" stroke-width="2"/><circle cx="55" cy="85" r="8" fill="#ff85c2"/><circle cx="49" cy="27" r="3" fill="#ff9dd1"/><circle cx="61" cy="27" r="3" fill="#ff9dd1"/></svg>`,
+  foxtail_pink: `<svg width="110" height="110" viewBox="0 0 110 110"><ellipse cx="55" cy="35" rx="8" ry="20" fill="#c0c0c0"/><ellipse cx="55" cy="35" rx="5" ry="15" fill="#e8e8e8"/><path d="M55 55 Q30 75 20 95 Q40 85 55 75 Q70 85 90 95 Q80 75 55 55Z" fill="#ffb6c1"/><path d="M55 55 Q40 70 35 85 Q50 78 55 70 Q60 78 75 85 Q70 70 55 55Z" fill="#ffd6de"/><path d="M55 55 Q50 65 52 75 Q55 68 58 75 Q60 65 55 55Z" fill="#ffe4e8"/><ellipse cx="55" cy="30" rx="10" ry="6" fill="silver" opacity=".5"/></svg>`,
+  swing: `<svg width="110" height="110" viewBox="0 0 110 110"><rect x="30" y="5" width="50" height="8" rx="3" fill="#222"/><line x1="35" y1="13" x2="28" y2="55" stroke="#333" stroke-width="3"/><line x1="75" y1="13" x2="82" y2="55" stroke="#333" stroke-width="3"/><rect x="22" y="55" width="66" height="12" rx="6" fill="#1a1a1a"/><line x1="28" y1="67" x2="24" y2="90" stroke="#333" stroke-width="2.5"/><line x1="82" y1="67" x2="86" y2="90" stroke="#333" stroke-width="2.5"/><rect x="18" y="88" width="30" height="8" rx="4" fill="#222"/><rect x="62" y="88" width="30" height="8" rx="4" fill="#222"/></svg>`
+};
+
+const colorLabels = {"#fff":"White","#1a1a1a":"Black","#b5e550":"Fluorescence","#ff9ed8":"Iridescence","#4caf50":"Green","#f5f077":"Yellow","#c0392b":"Red","#ff69b4":"Pink","#9b3a7d":"Purple","#ffb6c1":"Light Pink"};
+
+const products = [
+  { id:1, brand:"Desires", name:"Love Dice Set (2-Piece)", desc:"Roll the dice and let the night decide. Each 2-piece set features one action die and one body-part die, giving you 36 spicy combinations to explore. Compact acrylic — fits in your pocket or bedside drawer. Available in White, Black, and Fluorescence.", svgKey:"dice", price:"$7.99", flag:"Couples Fave", flagClass:"", colors:["#fff","#1a1a1a","#b5e550"] },
+  { id:2, brand:"Desires", name:"Fox Tail Plug — Iridescence", desc:"A vivid rainbow faux-fur tail meets a smooth tapered metal base. Body-safe stainless alloy warms to body temperature. Tapered tip for easy, comfortable wear. Detachable tail for quick cleaning. Perfect for cosplay and couples play.", svgKey:"foxtail_iris", price:"$14.99", flag:"New", flagClass:"new-tag", colors:["#ff9ed8","#1a1a1a"] },
+  { id:3, brand:"Desires", name:"Glow-in-the-Dark Rose Vibrator", desc:"The internet's most talked-about toy now in a glowing edition. 10 suction frequencies use air-pulse technology for intense clitoral stimulation — no direct contact needed. Body-safe silicone, whisper-quiet motor, IPX7 waterproof, USB magnetic charging. Available in 5 colors.", svgKey:"rose_glow", price:"$18.99", flag:"Best Seller", flagClass:"", colors:["#4caf50","#f5f077","#c0392b","#fff","#ff69b4"] },
+  { id:4, brand:"Desires", name:"Rose Vibrator", desc:"Shaped like a blooming rose, this compact clitoral suction toy delivers powerful air-pulse stimulation with 10 adjustable settings. Premium body-safe silicone — phthalate-free, latex-free, fully waterproof. USB rechargeable with up to 90 minutes per charge.", svgKey:"rose_vib", price:"$16.99", flag:"Sale", flagClass:"sale", colors:["#9b3a7d","#ff69b4","#c0392b"] },
+  { id:5, brand:"Desires", name:"12-Speed Rabbit Vibrator — Black", desc:"The classic dual-stimulation rabbit, perfected. Independent motors target the G-spot and clitoris simultaneously across 12 speed and pattern combinations. Ultra-soft body-safe silicone. Fully waterproof, USB rechargeable — up to 2 hours of continuous use.", svgKey:"rabbit", price:"$19.99", flag:null, flagClass:"", colors:["#1a1a1a","#ff69b4"] },
+  { id:6, brand:"Desires", name:"Fox Tail Plug — Pink", desc:"Soft and flirtatious, this pink faux-fur fox tail plug adds a playful sensory twist to intimacy. Smooth tapered stainless alloy base, body-safe materials, detachable tail for easy cleaning. Comfortable for extended wear. Great beginner piece.", svgKey:"foxtail_pink", price:"$14.99", flag:null, flagClass:"", colors:["#ffb6c1"] },
+  { id:7, brand:"Desires", name:"Over-the-Door Pleasure Swing", desc:"Unlock positions you never thought possible — no installation, no tools, no damage to your door. Drape heavy-duty nylon straps over any standard door, close it, and you're ready. Padded seat and leg stirrups. Fully adjustable, supports up to 300 lbs. Folds into a discreet travel bag.", svgKey:"swing", price:"$29.99", flag:"Couples", flagClass:"", colors:["#1a1a1a"] }
+];
+
+let cartCount = 0;
+
+const bgColors = {
+  dice:"linear-gradient(135deg,#f5f5f0,#e8e4d8)",
+  foxtail_iris:"linear-gradient(135deg,#1a0a2e,#3a1a4e)",
+  rose_glow:"linear-gradient(135deg,#0a1a0a,#0d2e0d)",
+  rose_vib:"linear-gradient(135deg,#2a0a2a,#4a1a3a)",
+  rabbit:"linear-gradient(135deg,#1a1a1a,#2a2a2a)",
+  rabbit_pink:"linear-gradient(135deg,#3a0a2e,#5a1a4a)",
+  foxtail_pink:"linear-gradient(135deg,#2e1a20,#4e2a35)",
+  swing:"linear-gradient(135deg,#1a1a1a,#333)"
+};
+
+function renderProducts() {
+  document.getElementById('productGrid').innerHTML = products.map(p => `
+    <div class="prod-card" onclick="openModal(${p.id})">
+      <div class="prod-thumb" style="background:${bgColors[p.svgKey]}">
+        ${p.flag ? `<div class="prod-flag ${p.flagClass}">${p.flag}</div>` : ''}
+        ${prodSVGs[p.svgKey]}
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand">${p.brand}</div>
+        <div class="stars">★★★★★</div>
+        <div class="prod-name">${p.name}</div>
+        <div class="color-dots">${p.colors.map(c=>`<span class="cdot" style="background:${c}" title="${colorLabels[c]||c}"></span>`).join('')}</div>
+        <div class="prod-desc">${p.desc.substring(0,88)}…</div>
+        <div class="prod-foot">
+          <div class="prod-price">${p.price}</div>
+          <button class="add-icon" onclick="event.stopPropagation();addToCart()" title="Add to bag">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openModal(id) {
+  const p = products.find(x => x.id === id);
+  document.getElementById('mImgWrap').innerHTML = `<div style="background:${bgColors[p.svgKey]};width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:3px 0 0 3px;padding:1.5rem">${prodSVGs[p.svgKey]}</div>`;
+  document.getElementById('mBrand').textContent = p.brand;
+  document.getElementById('mName').textContent = p.name;
+  document.getElementById('mDesc').textContent = p.desc;
+  document.getElementById('mPrice').textContent = p.price;
+  document.getElementById('mColors').innerHTML = `<span>Available colors:</span><div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.3rem">${p.colors.map(c=>`<span class="cdot" style="background:${c};width:18px;height:18px" title="${colorLabels[c]||c}"></span>`).join('')}</div>`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function addToCart() {
+  cartCount++;
+  document.getElementById('cartBtn').textContent = `Bag (${cartCount})`;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function openCart() {
+  alert(`Your bag has ${cartCount} item(s).\n\nIn your live Wix store, this opens full cart with PayPal and Apple Pay at checkout.`);
+}
+
+renderProducts();
+</script>
+</body>
+</html>
